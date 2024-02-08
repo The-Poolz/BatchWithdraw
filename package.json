@@ -1,0 +1,34 @@
+{
+    "name": "batch-withdraw",
+    "version": "1.0.0",
+    "description": "Contract for mass withdrawal of NFTs",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/The-Poolz/BatchWithdraw.git"
+    },
+    "author": "The-Poolz @ Stan Goldin, Andrew Dmytrenko",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/The-Poolz/BatchWithdraw/issues"
+    },
+    "homepage": "https://github.com/The-Poolz/BatchWithdraw#readme",
+    "devDependencies": {
+        "@nomicfoundation/hardhat-chai-matchers": "^2.0.4",
+        "@nomicfoundation/hardhat-ethers": "^3.0.5",
+        "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
+        "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+        "@nomicfoundation/hardhat-verify": "^2.0.4",
+        "@truffle/dashboard-hardhat-plugin": "^0.2.15",
+        "ethers": "^6.10.0",
+        "hardhat": "^2.19.5",
+        "solidity-coverage": "^0.8.5"
+    },
+    "dependencies": {
+        "@openzeppelin/contracts": "^5.0.1",
+        "@poolzfinance/poolz-helper-v2": "^2.3.1"
+    }
+}
