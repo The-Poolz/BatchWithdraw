@@ -1,21 +1,24 @@
-import { BatchWithdraw, MockLockDealNFT } from "../typechain-types/"
+import { BatchWithdraw, MockLockDealNFT, MockRefundProvider } from "../typechain-types/"
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers"
 import { expect } from "chai"
-import { parseUnits } from "ethers"
 import { ethers } from "hardhat"
 
 describe("Batch Withdraw", function () {
     let batchWithdraw: BatchWithdraw
     let lockDealNFT: MockLockDealNFT
-    let owner: SignerWithAddress
+    let refundProvider: MockRefundProvider
     let user: SignerWithAddress
     let totalSupply = 0
     const tokenAmount = 10 // per iteration
 
     before(async () => {
-        [owner, user] = await ethers.getSigners()
+        [user] = await ethers.getSigners()
         const ERC721 = await ethers.getContractFactory("MockLockDealNFT")
         lockDealNFT = await ERC721.deploy("LockDealNFT", "LDNFT")
+        const RefundProvider = await ethers.getContractFactory("MockRefundProvider")
+        refundProvider = await RefundProvider.deploy(await lockDealNFT.getAddress())
+        const refundProviderAddress = await refundProvider.getAddress()
+        await lockDealNFT.setRefundProvider(refundProviderAddress)
         const BatchWithdraw = await ethers.getContractFactory("BatchWithdraw")
         batchWithdraw = await BatchWithdraw.deploy(await lockDealNFT.getAddress())
         // approve batchWithdraw to withdraw tokens
@@ -33,6 +36,20 @@ describe("Batch Withdraw", function () {
         await batchWithdraw.connect(user)["withdrawAll()"]()
         expect(await lockDealNFT.balanceOf(await lockDealNFT.getAddress())).to.equal(
             BigInt(balance) + BigInt(tokenAmount)
+        )
+    })
+
+    it("should send tokens to refund provider", async () => {
+        const balance = await lockDealNFT.balanceOf(await refundProvider.getAddress())
+        await batchWithdraw.connect(user).batchRefund([totalSupply - 1, totalSupply - 2, totalSupply - 3])
+        expect(await lockDealNFT.balanceOf(await refundProvider.getAddress())).to.equal(BigInt(balance) + BigInt(3))
+    })
+
+    it("should withdraw tokens after refund", async () => {
+        const lockDealNFTBalance = await lockDealNFT.balanceOf(await lockDealNFT.getAddress())
+        await batchWithdraw.connect(user).batchRefund([totalSupply - 1, totalSupply - 2, totalSupply - 3])
+        expect(await lockDealNFT.balanceOf(await lockDealNFT.getAddress())).to.equal(
+            BigInt(lockDealNFTBalance) + BigInt(3)
         )
     })
 
