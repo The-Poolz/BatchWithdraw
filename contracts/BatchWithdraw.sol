@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "./BatchWithdrawInternal.sol";
 
 contract BatchWithdraw is BatchWithdrawInternal{
-    ///@dev delegate constructor to BatchWithdrawInternal 
     constructor(ILockDealNFTViews _lockDealNFT) BatchWithdrawInternal(_lockDealNFT) {}
 
     ///@dev Use this function to withdraw the tokens from the user
