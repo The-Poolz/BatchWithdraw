@@ -48,11 +48,9 @@ truffle dashboard
 ```console
 npx hardhat run ./scripts/deploy.ts --network truffleDashboard
 ```
-
 ## Functionality
 
 ## UML
 
 ## License
-
 [The-Poolz](https://poolz.finance/) Contracts is released under the [MIT License](https://github.com/The-Poolz/BatchWithdraw/blob/master/LICENSE).
