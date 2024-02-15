@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@poolzfinance/poolz-helper-v2/contracts/Nameable.sol";
 import "./BatchWithdrawInternal.sol";
 
-contract BatchWithdraw is BatchWithdrawInternal{
-    constructor(ILockDealNFTViews _lockDealNFT) BatchWithdrawInternal(_lockDealNFT) {}
+contract BatchWithdraw is BatchWithdrawInternal, Nameable {
+    constructor(ILockDealNFTViews _lockDealNFT, string memory name, string memory version) 
+    BatchWithdrawInternal(_lockDealNFT) 
+    Nameable(name, version)
+    {}
 
     ///@dev Use this function to withdraw the tokens from the user
     ///@param tokenIds - array of token ids - must be owned by the user
