@@ -10,6 +10,8 @@ describe("Batch Withdraw", function () {
     let user: SignerWithAddress
     let totalSupply = 0
     const tokenAmount = 10 // per iteration
+    const name = "BatchWithdraw"
+    const version = "0.9.0"
 
     before(async () => {
         [user] = await ethers.getSigners()
@@ -20,7 +22,7 @@ describe("Batch Withdraw", function () {
         const refundProviderAddress = await refundProvider.getAddress()
         await lockDealNFT.setRefundProvider(refundProviderAddress)
         const BatchWithdraw = await ethers.getContractFactory("BatchWithdraw")
-        batchWithdraw = await BatchWithdraw.deploy(await lockDealNFT.getAddress())
+        batchWithdraw = await BatchWithdraw.deploy(await lockDealNFT.getAddress(), name, version)
         // approve batchWithdraw to withdraw tokens
         await lockDealNFT.connect(user).setApprovalForAll(await batchWithdraw.getAddress(), true)
     })
@@ -31,11 +33,19 @@ describe("Batch Withdraw", function () {
         await lockDealNFT.mint(user.address, tokenAmount)
     })
 
+    it("should return name", async () => {
+        expect(await batchWithdraw.name()).to.equal(name)
+    })
+
+    it("should return version", async () => {
+        expect(await batchWithdraw.version()).to.equal(version)
+    })
+
     it("should withdraw all tokens", async () => {
         const balance = await lockDealNFT.balanceOf(await lockDealNFT.getAddress())
         await batchWithdraw.connect(user)["withdrawAll()"]()
         expect(await lockDealNFT.balanceOf(await lockDealNFT.getAddress())).to.equal(
-            BigInt(balance) + BigInt(tokenAmount)
+            BigInt(balance) + BigInt(totalSupply)
         )
     })
 
